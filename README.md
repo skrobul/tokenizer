@@ -2,7 +2,7 @@ This module solves the problem of extracing IP addresses and Cisco / Arista inte
 
 
 # Installation
-
+`npm install log-tokenizer`
 
 # Usage 
 Functionality of this module has been split into three functions
