@@ -141,18 +141,18 @@ describe("#tokenize", function() {
   describe("for message with both IP address and interface names", function() {
     var res;
     before(function() {
-      res = extractor.tokenize("2015-03-21 Android 1.1.3.3 connected through Fa4/13 to host 5.5.5.5, interface Gi3/1")
+      res = extractor.tokenize("2015-03-21 Android 1.1.3.3 connected through Fa1/13 to host 5.5.5.5, interface Gi3/1")
     })
 
     it("does not duplicate the elements while running multiple extractors", function() {
-      expect(res.length).to.equal(6)
+      expect(res.length).to.equal(8)
     })
 
     it("keeps the order in returned array", function() {
       expect(res[0].txt).to.equal('2015-03-21 Android ')
       expect(res[1].txt).to.equal('1.1.3.3')
       expect(res[2].txt).to.equal(' connected through ')
-      expect(res[3].txt).to.equal('Fa4/13')
+      expect(res[3].txt).to.equal('Fa1/13')
       expect(res[4].txt).to.equal(' to host ')
       expect(res[5].txt).to.equal('5.5.5.5')
       expect(res[6].txt).to.equal(', interface ')
