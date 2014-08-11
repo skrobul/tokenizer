@@ -43,6 +43,37 @@ describe('#extractIPs', function(){
   })
 })
 
+describe("#extractInterfaces", function() {
+    var interface_prefixes = ['TenGigabitEthernet', 'GigabitEthernet', 'FastEthernet', 'Ethernet', 'ethernet',
+                              'Te', 'Gi', 'Fa', 'Et', 'eth', 'PortChannel', 'port-channel', 'POS',
+                              'TenGigE', 'MLAG'
+                              ]
+
+    for(var i=0; i < interface_prefixes.length; i++) {
+      var iface_pfx = interface_prefixes[i]
+      var txt, res, iface_name;
+      before(function(){
+        if(iface_pfx == 'TenGigE' || iface_pfx == 'MLAG') {
+          iface_name = iface_pfx + '5'
+        } else {
+          iface_name = iface_pfx + '1/5'
+        }
+        txt = "2014-01-01 test message about " + iface_name + " with some text afterwards."
+        res = extractor.extractInterfaces(txt)
+      })
+      it("extracts interface names with " + iface_pfx + " prefix", function() {
+        expect(res[0].txt).to.equal(iface_name)
+      })
+      it("discovers correct position of interface name for " + iface_pfx, function() {
+        expect(res[0].index).to.equal(txt.indexOf(iface_name))
+      })
+      it("discovers correct length of interface name for " + iface_pfx, function() {
+        expect(res[0].len).to.equal(iface_name.length)
+      })
+    }
+})
+
+
 describe("#tokenize", function() {
   describe("for single IP address inside msg", function(){
     var res;
@@ -55,8 +86,8 @@ describe("#tokenize", function() {
       expect(res.length).to.equal(3)
     })
     it("stores raw text as strings on correct positions", function() {
-      expect(res[0]).to.equal('abcd ')
-      expect(res[2]).to.equal(' something')
+      expect(res[0].txt).to.equal('abcd ')
+      expect(res[2].txt).to.equal(' something')
     })
     it("stores extracted IP on correct position", function() {
       expect(res[1]).to.deep.equal({ index: 5, len: '10.0.0.2'.length, txt: '10.0.0.2'})
@@ -72,10 +103,16 @@ describe("#tokenize", function() {
       expect(res.length).to.equal(5)
     })
 
-    it("stores raw text as strings on correct positions", function() {
-      expect(res[0]).to.equal('And I am different message about comms from ')
-      expect(res[2]).to.equal(' to ')
-      expect(res[4]).to.equal(' or something else')
+    it("stores raw text as strings", function() {
+      expect(res[0].txt).to.equal('And I am different message about comms from ')
+      expect(res[2].txt).to.equal(' to ')
+      expect(res[4].txt).to.equal(' or something else')
+    })
+
+    it("stores raw text positions", function() {
+      expect(res[0].index).to.equal(0)
+      expect(res[2].index).to.equal(51)
+      expect(res[4].index).to.equal(67)
     })
 
     it("stores extracted IPs on correct positions", function() {
