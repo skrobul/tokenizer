@@ -15,6 +15,11 @@ describe('#extractIPs', function(){
     expect(res[0].index).to.equal(39)
   })
 
+  it("sets a type to ipaddress", function() {
+    var res = extractor.extractIPs(testMessage1)
+    expect(res[0].type).to.equal('ipaddress')
+  })
+
   it("does not detect SNMP oids as IP addresses", function() {
     var res = extractor.extractIPs(testMessage1)
     expect(res.length).to.equal(1)
@@ -70,6 +75,9 @@ describe("#extractInterfaces", function() {
       it("discovers correct length of interface name for " + iface_pfx, function() {
         expect(res[0].len).to.equal(iface_name.length)
       })
+      it("sets msg type to interface", function() {
+        expect(res[0].type).to.equal('interface')
+      })
     }
 })
 
@@ -89,8 +97,12 @@ describe("#tokenize", function() {
       expect(res[0].txt).to.equal('abcd ')
       expect(res[2].txt).to.equal(' something')
     })
+    it("stores raw text with appropriate type", function() {
+      expect(res[0].type).to.equal('text')
+      expect(res[2].type).to.equal('text')
+    })
     it("stores extracted IP on correct position", function() {
-      expect(res[1]).to.deep.equal({ index: 5, len: '10.0.0.2'.length, txt: '10.0.0.2'})
+      expect(res[1]).to.deep.equal({ index: 5, len: '10.0.0.2'.length, txt: '10.0.0.2', type: 'ipaddress'})
     })
   })
   describe("for multiple IP addresses", function() {
@@ -116,8 +128,8 @@ describe("#tokenize", function() {
     })
 
     it("stores extracted IPs on correct positions", function() {
-      expect(res[1]).to.deep.equal({ index: 44, len: '6.6.6.6'.length, txt: '6.6.6.6'})
-      expect(res[3]).to.deep.equal({ index: 55, len: '192.168.30.1'.length, txt: '192.168.30.1'})
+      expect(res[1]).to.deep.equal({ index: 44, len: '6.6.6.6'.length, txt: '6.6.6.6', type: 'ipaddress'})
+      expect(res[3]).to.deep.equal({ index: 55, len: '192.168.30.1'.length, txt: '192.168.30.1', type: 'ipaddress'})
     })
   })
 
