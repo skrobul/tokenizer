@@ -2,7 +2,7 @@
   "name": "tokenizer",
   "version": "0.0.1",
   "description": "Extract IP addresses and Cisco interface names from the text",
-  "main": "lib/extractor.js",
+  "main": "lib/tokenizer.js",
   "scripts": {
     "test": "mocha"
   },

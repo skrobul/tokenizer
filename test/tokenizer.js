@@ -1,4 +1,4 @@
-extractor = require('../lib/extractor')
+tokenizer = require('../lib/tokenizer')
 expect = require('chai').expect
 
 var testMessage1 = "this is a test text with IP address of 4.4.4.4 and some other irrelevant numbers .1.2.3.4.5.6";
@@ -6,28 +6,28 @@ var testMessage2 = "And I am different message about comms from 6.6.6.6 to 192.1
 
 describe('#extractIPs', function(){
   it("extracts single IP address correctly", function() {
-    var res = extractor.extractIPs(testMessage1)
+    var res = tokenizer.extractIPs(testMessage1)
     expect(res[0].txt).to.equal('4.4.4.4')
   })
 
   it("returns correct index of the match", function() {
-    var res = extractor.extractIPs(testMessage1)
+    var res = tokenizer.extractIPs(testMessage1)
     expect(res[0].index).to.equal(39)
   })
 
   it("sets a type to ipaddress", function() {
-    var res = extractor.extractIPs(testMessage1)
+    var res = tokenizer.extractIPs(testMessage1)
     expect(res[0].type).to.equal('ipaddress')
   })
 
   it("does not detect SNMP oids as IP addresses", function() {
-    var res = extractor.extractIPs(testMessage1)
+    var res = tokenizer.extractIPs(testMessage1)
     expect(res.length).to.equal(1)
   })
   describe(" for multiple IP message", function() {
     var res;
     before(function() {
-      res = extractor.extractIPs(testMessage2)
+      res = tokenizer.extractIPs(testMessage2)
     })
     it("extracts exact amount of messages", function() {
       expect(res.length).to.equal(2)
@@ -64,7 +64,7 @@ describe("#extractInterfaces", function() {
           iface_name = iface_pfx + '1/5'
         }
         txt = "2014-01-01 test message about " + iface_name + " with some text afterwards."
-        res = extractor.extractInterfaces(txt)
+        res = tokenizer.extractInterfaces(txt)
       })
       it("extracts interface names with " + iface_pfx + " prefix", function() {
         expect(res[0].txt).to.equal(iface_name)
@@ -87,7 +87,7 @@ describe("#tokenize", function() {
     var res;
     before(function() {
       var rawmsg = "abcd 10.0.0.2 something"
-      res = extractor.tokenize(rawmsg)
+      res = tokenizer.tokenize(rawmsg)
     })
 
     it("tokenizes into 3 element array", function() {
@@ -108,7 +108,7 @@ describe("#tokenize", function() {
   describe("for multiple IP addresses", function() {
     var res;
     before(function() {
-      res = extractor.tokenize("And I am different message about comms from 6.6.6.6 to 192.168.30.1 or something else")
+      res = tokenizer.tokenize("And I am different message about comms from 6.6.6.6 to 192.168.30.1 or something else")
     })
 
     it("tokenizes into X element array", function() {
@@ -137,7 +137,7 @@ describe("#tokenize", function() {
     var res;
     before(function() {
       var rawmsg = '2014-01-13 Very important interface Gi0/3 connected to FastEthernet1/5'
-      res = extractor.tokenize(rawmsg)
+      res = tokenizer.tokenize(rawmsg)
     })
     it("extracts correct number of elements", function() {
       expect(res.length).to.equal(4)
@@ -153,10 +153,10 @@ describe("#tokenize", function() {
   describe("for message with both IP address and interface names", function() {
     var res;
     before(function() {
-      res = extractor.tokenize("2015-03-21 Android 1.1.3.3 connected through Fa1/13 to host 5.5.5.5, interface Gi3/1")
+      res = tokenizer.tokenize("2015-03-21 Android 1.1.3.3 connected through Fa1/13 to host 5.5.5.5, interface Gi3/1")
     })
 
-    it("does not duplicate the elements while running multiple extractors", function() {
+    it("does not duplicate the elements while running multiple tokenizers", function() {
       expect(res.length).to.equal(8)
     })
 
