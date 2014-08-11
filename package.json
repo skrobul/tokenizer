@@ -1,6 +1,6 @@
 {
   "name": "log-tokenizer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Extract IP addresses and Cisco interface names from the text",
   "main": "lib/tokenizer.js",
   "scripts": {
