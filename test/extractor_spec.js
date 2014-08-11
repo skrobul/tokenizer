@@ -119,8 +119,22 @@ describe("#tokenize", function() {
       expect(res[1]).to.deep.equal({ index: 44, len: '6.6.6.6'.length, txt: '6.6.6.6'})
       expect(res[3]).to.deep.equal({ index: 55, len: '192.168.30.1'.length, txt: '192.168.30.1'})
     })
+  })
 
-
-
+  describe("for multiple interfaces in a message", function() {
+    var res;
+    before(function() {
+      var rawmsg = '2014-01-13 Very important interface Gi0/3 connected to FastEthernet1/5'
+      res = extractor.tokenize(rawmsg)
+    })
+    it("extracts correct number of elements", function() {
+      expect(res.length).to.equal(4)
+    })
+    it("extracts correct interfaces", function() {
+      expect(res[0].txt).to.equal('2014-01-13 Very important interface ')
+      expect(res[1].txt).to.equal('Gi0/3')
+      expect(res[2].txt).to.equal(' connected to ')
+      expect(res[3].txt).to.equal('FastEthernet1/5')
+    })
   })
 })
